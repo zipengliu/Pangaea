@@ -4,6 +4,7 @@ import { Router, IndexRoute, Route, browserHistory} from 'react-router'
 
 import App from './Components/App';
 import Test from './Components/Test';
+import Submit from './Components/Submit';
 import About from './Components/About';
 import './index.css';
 
@@ -13,6 +14,7 @@ let root = (
 
             <IndexRoute component={About} />
             <Route path="test/:instanceId" component={Test} />
+            <Route path="submit/:instanceId" component={Submit} />
         </Route>
     </Router>
 );
