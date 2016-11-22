@@ -1,0 +1,15 @@
+.line {
+    fill: none;
+    stroke-width: 2px;
+    stroke: steelblue;
+}
+
+.start-point {
+    stroke-width: 3px;
+    stroke: red;
+}
+
+.end-point {
+    stroke-width: 3px;
+    stroke: yellow;
+}

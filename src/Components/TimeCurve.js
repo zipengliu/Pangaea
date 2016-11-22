@@ -3,16 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import {line, select, curveCatmullRom} from 'd3';
-import  './App.css'
-
-class Point extends Component {
-    render() {
-        return (
-            <circle cx={this.props.x} cy={this.props.y} r="5"></circle>
-        )
-    }
-}
+import {line, select, curveCatmullRom, scaleLinear} from 'd3';
+import classNames from 'classnames';
+import  './TimeCurve.css'
 
 class Spline extends Component {
     componentDidMount() {
@@ -30,8 +23,8 @@ class Spline extends Component {
         console.log(this.path);
         this.path.datum(this.props.points);
         let l = line()
-            .x(d => d[0])
-            .y(d => d[1])
+            .x(d => d.x)
+            .y(d => d.y)
             .curve(curveCatmullRom.alpha(0.5));
         this.path.attr('d', l);
     }
@@ -43,19 +36,21 @@ class Spline extends Component {
     }
 }
 
-class TimeCurve extends Component {
-    getControlPoints() {
 
-    }
+class TimeCurve extends Component {
 
     render() {
+        let xScale = scaleLinear().range([0, 800]);
+        let yScale = scaleLinear().range([0, 400]);
+        let points = this.props.points.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
         return (
             <div>
-                <svg width="800" height="500">
-                    {this.props.points.map((p,i) => (
-                        <Point x={p[0]} y={p[1]} key={i} ></Point>
+                <svg width="800" height="400">
+                    <Spline points={points} />
+                    {points.map((p,i) => (
+                        <circle className={classNames({'start-point': i == 0, 'end-point': i == points.length - 1})}
+                                cx={p.x} cy={p.y} key={i} r="5"></circle>
                     ))}
-                    <Spline points={this.props.points} />
                 </svg>
             </div>
         );
