@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import 'whatwg-fetch';
 import StateDetail from './StateDetail';
 import TimeCurve from './TimeCurve';
+import {reduceDim} from '../utils';
 
 class Test extends Component {
     constructor(props) {
@@ -19,10 +20,9 @@ class Test extends Component {
     }
 
     componentDidMount() {
+        console.log('fetching data...');
         let that = this;
         // Get state from server
-        let transformPoints = x => (x + 2.0)*100;
-
         fetch(`http://localhost:23333/instance/${this.props.params.instanceId}`)
             .then(function(response) {
                 if (response.status >= 400) {
@@ -31,9 +31,9 @@ class Test extends Component {
                 return response.json();
             }).then(function (data) {
                 console.log(data);
-                // data.points = data.points.map(p => [transformPoints(p[0]), transformPoints(p[1])]);
                 that.setState({
-                    points: data.points,
+                    distances: data.distances,
+                    coordinates: reduceDim(data.distances),
                     states: data.states
                 })
             });
@@ -47,10 +47,10 @@ class Test extends Component {
         return (
             <div>
                 <div>
-                    <TimeCurve points={this.state.points} />
+                    {this.state.coordinates && <TimeCurve points={this.state.coordinates} />}
                 </div>
                 <div>
-                    <StateDetail state={this.state.selectedState} />
+                    {/*<StateDetail state={this.state.selectedState} />*/}
                 </div>
 
             </div>

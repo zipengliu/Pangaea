@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, IndexRoute, Route, browserHistory} from 'react-router'
+import { Router, IndexRoute, Route, browserHistory} from 'react-router';
 
 import App from './Components/App';
 import Test from './Components/Test';
 import Submit from './Components/Submit';
 import About from './Components/About';
 import './index.css';
+
+console.log('Welcome to Pangaea!');
 
 let root = (
     <Router history={browserHistory}>
