@@ -5,7 +5,8 @@
 import React, { Component } from 'react';
 import {line, select, curveCatmullRom, scaleLinear} from 'd3';
 import classNames from 'classnames';
-import  './TimeCurve.css'
+import {avoidOverlap} from '../utils';
+import  './TimeCurve.css';
 
 class Spline extends Component {
     componentDidMount() {
@@ -43,12 +44,13 @@ class TimeCurve extends Component {
         let xScale = scaleLinear().range([0, 800]);
         let yScale = scaleLinear().range([0, 400]);
         let points = this.props.points.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
+        points = avoidOverlap(points, 4);
         return (
             <div>
                 <svg width="800" height="400">
                     <Spline points={points} />
                     {points.map((p,i) => (
-                        <circle className={classNames({'start-point': i == 0, 'end-point': i == points.length - 1})}
+                        <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}
                                 cx={p.x} cy={p.y} key={i} r="5"></circle>
                     ))}
                 </svg>

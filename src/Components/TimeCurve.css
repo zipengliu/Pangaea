@@ -4,6 +4,10 @@
     stroke: steelblue;
 }
 
+.point {
+    fill-opacity: .5;
+}
+
 .start-point {
     stroke-width: 3px;
     stroke: red;
