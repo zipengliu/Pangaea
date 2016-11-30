@@ -1,0 +1,41 @@
+/**
+ * Created by Zipeng Liu on 2016-11-30.
+ */
+
+import * as TYPE from './actionTypes';
+import 'whatwg-fetch';
+
+const baseUrl = 'http://localhost:23333';
+
+
+export function fetchInstance(id) {
+    console.log('Fetching data...');
+    return function (dispatch) {
+        dispatch(requestInstance(id));
+        return fetch(baseUrl + '/instance/' + id).then(function(response) {
+            if (response.status >= 400) {
+                console.log("Bad response from server");
+                dispatch(fetchInstanceFailure(response.statusText))
+            }
+            return response.json();
+        }).then(function (data) {
+            console.log('Get data succeeded!');
+            dispatch(fetchInstanceSuccess(data));
+        }).catch(function(error) {
+            dispatch(fetchInstanceFailure(error));
+        });
+
+    }
+}
+
+function requestInstance(id) {
+    return {type: TYPE.FETCH_INSTANCE_REQUEST, instanceId: id}
+}
+
+function fetchInstanceSuccess(data) {
+    return {type: TYPE.FETCH_INSTANCE_SUCCESS, data};
+}
+
+function fetchInstanceFailure(error) {
+    return {type: TYPE.FETCH_INSTANCE_FAILURE, error: error.toString()}
+}
