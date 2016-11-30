@@ -31,7 +31,7 @@ class Test extends Component {
                 return response.json();
             }).then(function (data) {
                 console.log(data);
-                data.points = data.points.map(p => [transformPoints(p[0]), transformPoints(p[1])]);
+                // data.points = data.points.map(p => [transformPoints(p[0]), transformPoints(p[1])]);
                 that.setState({
                     points: data.points,
                     states: data.states
@@ -46,8 +46,6 @@ class Test extends Component {
     render() {
         return (
             <div>
-                <h1>This is the test page. Instance {this.props.params.instanceId}</h1>
-
                 <div>
                     <TimeCurve points={this.state.points} />
                 </div>
