@@ -41,13 +41,14 @@ class Spline extends Component {
 class TimeCurve extends Component {
 
     render() {
-        let xScale = scaleLinear().range([0, 800]);
-        let yScale = scaleLinear().range([0, 400]);
+        let {width, height} = this.props;
+        let xScale = scaleLinear().range([0, width]);
+        let yScale = scaleLinear().range([0, height]);
         let points = this.props.points.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
         points = avoidOverlap(points, 4);
         return (
             <div>
-                <svg width="800" height="400">
+                <svg width={width} height={height}>
                     <Spline points={points} />
                     {points.map((p,i) => (
                         <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}

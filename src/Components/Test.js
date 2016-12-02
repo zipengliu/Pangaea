@@ -47,7 +47,7 @@ class Test extends Component {
         return (
             <div>
                 <div>
-                    {this.state.coordinates && <TimeCurve points={this.state.coordinates} />}
+                    {this.state.coordinates && <TimeCurve points={this.state.coordinates} width={800} height={400} />}
                 </div>
                 <div>
                     {/*<StateDetail state={this.state.selectedState} />*/}
