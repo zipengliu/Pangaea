@@ -20,7 +20,9 @@ class MainView extends Component {
                 <h1>{this.props.fetchError.toString() || 'Failed to fetch data.'}</h1>}
                 {!this.props.isFetching && this.props.fetchError == null && this.props.instanceData &&
                     <div>
-                        <TimeCurve points={this.props.overview.timeCurve.coordinates} width={300} height={300} />
+                        <TimeCurve points={this.props.overview.timeCurve.coordinates}
+                                   states={this.props.instanceData.states}
+                                   width={300} height={300} />
                     </div>
                 }
             </div>

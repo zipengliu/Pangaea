@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import StateDetail from './StateDetail';
 import TimeCurve from './TimeCurve';
 import {reduceDim} from '../utils';
 
