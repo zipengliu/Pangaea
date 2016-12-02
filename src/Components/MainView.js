@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {fetchInstance} from '../actions';
 import TimeCurve from './TimeCurve';
+import InvariantGraph from './InvariantGraph';
 
 class MainView extends Component {
     componentDidMount() {
@@ -23,6 +24,7 @@ class MainView extends Component {
                         <TimeCurve points={this.props.overview.timeCurve.coordinates}
                                    states={this.props.instanceData.states}
                                    width={300} height={300} />
+                        <InvariantGraph data={this.props.overview.invariantGraph}  />
                     </div>
                 }
             </div>

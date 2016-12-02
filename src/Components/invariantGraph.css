@@ -1,0 +1,8 @@
+.dot {
+    fill: grey;
+}
+
+.link {
+    stroke: black;
+    stroke-width: 1px;
+}

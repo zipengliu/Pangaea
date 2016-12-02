@@ -2,7 +2,8 @@
  * Created by Zipeng Liu on 2016-11-22.
  */
 
-import {scaleLinear, extent, deviation, forceSimulation, forceCollide} from 'd3';
+import {scaleLinear, extent, deviation,
+    forceSimulation, forceCollide, forceLink, forceManyBody, forceCenter} from 'd3';
 import tsnejs from './tsne';
 
 
@@ -15,7 +16,7 @@ export function avoidOverlap(coords, r) {
     let nodes = coords.map((d, i) => ({...d, index: i}));
     let simulation = forceSimulation(nodes).force('collide', forceCollide(r)).stop();
         // .on('tick', () => {console.log('tick')});
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 300; i++) {
         simulation.tick();
     }
     return nodes.map(d => ({x: d.x, y: d.y}));
@@ -79,4 +80,16 @@ export function reduceDim(d) {
 
     let  coords = tsne.getSolution().map(d => ({x: d[0], y: d[1]}));
     return normalize(rotate(coords));
+}
+
+export function performForceSimulation(nodes, links, width, height) {
+    let simulation = forceSimulation(nodes)
+        .force('link', forceLink(links).id(d => d.varName).distance(50))
+        .force('charge', forceManyBody().strength(-30))
+        .force('center', forceCenter(width / 2, height / 2))
+        .stop();
+    for (let i = 0; i < 300; i++) {
+        simulation.tick();
+    }
+    return {nodes, links};
 }
