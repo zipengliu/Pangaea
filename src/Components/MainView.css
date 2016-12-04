@@ -1,0 +1,11 @@
+.main-container {
+    display: flex;
+}
+
+.time-curve-container {
+    flex: 1 0 50%;
+}
+
+.invariant-graph-container {
+    flex: 1 0 50%;
+}

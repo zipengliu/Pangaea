@@ -22,7 +22,6 @@ class Spline extends Component {
 
     renderSpline() {
         // D3 manipulation here
-        console.log(this.path);
         this.path.datum(this.props.points);
         let l = line()
             .x(d => d.x)

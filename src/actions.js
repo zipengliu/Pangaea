@@ -39,3 +39,15 @@ function fetchInstanceSuccess(data) {
 function fetchInstanceFailure(error) {
     return {type: TYPE.FETCH_INSTANCE_FAILURE, error: error.toString()}
 }
+
+export function toggleLabel() {
+    return {type: TYPE.TOGGLE_LABEL}
+}
+
+export function toggleTransitivityMode() {
+    return {type: TYPE.TOGGLE_TRANSITIVITY_MODE}
+}
+
+export function toggleHighlightInvariantNode(name) {
+    return {type: TYPE.TOGGLE_HIGHLIGHT_INVARIANT_NODE, name};
+}
