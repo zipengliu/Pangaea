@@ -2,7 +2,12 @@
     fill: grey;
 }
 
-.link {
+.link.equal {
     stroke: black;
     stroke-width: 1px;
+}
+
+.link.non-equal {
+    fill: steelblue;
+    fill-opacity: .4;
 }

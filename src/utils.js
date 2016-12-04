@@ -84,7 +84,7 @@ export function reduceDim(d) {
 
 export function performForceSimulation(nodes, links, width, height) {
     let simulation = forceSimulation(nodes)
-        .force('link', forceLink(links).id(d => d.varName).distance(50))
+        .force('link', forceLink(links).id(d => d.varName).distance(80))
         .force('charge', forceManyBody().strength(-30))
         .force('center', forceCenter(width / 2, height / 2))
         .stop();
@@ -92,4 +92,24 @@ export function performForceSimulation(nodes, links, width, height) {
         simulation.tick();
     }
     return {nodes, links};
+}
+
+export function getDistance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
+export function getTriangle(src, tgt, margin, d) {
+    console.log(src, tgt);
+    let l = getDistance(src.x, src.y, tgt.x, tgt.y);
+    let sin = (tgt.y - src.y) / l;
+    let cos = (tgt.x - src.x) / l;
+    let tip = {x: src.x + margin * cos, y: src.y + margin * sin};
+    let bottom = {x: tgt.x - margin * cos, y: tgt.y - margin * sin};
+    console.log(tip, bottom);
+
+    let c1 = {x: bottom.x + d * sin, y: bottom.y - d * cos};
+    let c2 = {x: bottom.x - d * sin, y: bottom.y + d * cos};
+    console.log(c1, c2);
+
+    return [tip, c1, c2];
 }
