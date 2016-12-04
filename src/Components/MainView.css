@@ -9,3 +9,26 @@
 .invariant-graph-container {
     flex: 1 0 50%;
 }
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.graph {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.graph h3 {
+    text-align: center;
+}
+.graph .svg {
+    border: 1px solid grey;
+}
+.tools {
+    flex: 1 0 auto;
+    padding: 10px 10px;
+    min-width: 300px;
+}
+

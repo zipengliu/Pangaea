@@ -9,7 +9,7 @@ import {ButtonGroup, Button, Glyphicon, OverlayTrigger, Tooltip} from 'react-boo
 import InvariantGraph from './InvariantGraph';
 import {toggleLabel, toggleHighlightInvariantNode} from '../actions';
 
-import './InvariantGraph.css';
+import './MainView.css';
 
 class InvariantGraphContainer extends Component {
     render() {

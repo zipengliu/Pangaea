@@ -9,33 +9,18 @@ import classNames from 'classnames';
 import {avoidOverlap} from '../utils';
 import  './TimeCurve.css';
 
-class Spline extends Component {
-    componentDidMount() {
-        this.path = select(this.refs.spline).append('path')
-            .attr('class', 'line');
-        this.renderSpline();
-    }
 
-    componentDidUpdate() {
-        this.renderSpline();
-    }
-
-    renderSpline() {
-        // D3 manipulation here
-        this.path.datum(this.props.points);
-        let l = line()
-            .x(d => d.x)
-            .y(d => d.y)
-            .curve(curveCatmullRom.alpha(0.5));
-        this.path.attr('d', l);
-    }
-
-    render() {
-        return (
-            <g ref="spline"></g>
-        )
-    }
-}
+let Spline = ({points}) => {
+    let l = line()
+        .x(d => d.x)
+        .y(d => d.y)
+        .curve(curveCatmullRom.alpha(0.5));
+    return (
+        <g>
+            <path className="line" d={l(points)}/>
+        </g>
+    )
+};
 
 
 let StateDetail = props => {
@@ -53,7 +38,6 @@ let StateDetail = props => {
             </tr>)
         }
     }
-    console.log(rows);
 
     return (
         <div>
@@ -93,25 +77,42 @@ let StateDetail = props => {
 class TimeCurve extends Component {
 
     render() {
-        let {width, height} = this.props;
+        let {width, height, padding, coordinates} = this.props.timeCurve;
         let xScale = scaleLinear().range([0, width]);
         let yScale = scaleLinear().range([0, height]);
-        let points = this.props.points.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
+        let points = coordinates.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
         points = avoidOverlap(points, 4);
 
         let createPopover = (s, i) => <Popover id={'state-' + i} title={"State of Node " + i}>
             <StateDetail data={s} /></Popover>;
         return (
             <div>
-                <svg width={width} height={height}>
-                    <Spline points={points} />
-                    {points.map((p,i) => (
-                        <OverlayTrigger key={i} trigger="click" placement="right" rootClose
-                                        overlay={createPopover(this.props.states[i], i)}>
-                            <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}
-                                    cx={p.x} cy={p.y} r="5"></circle>
-                        </OverlayTrigger>
-                    ))}
+                <svg width={width + padding.left + padding.right} height={height + padding.top + padding.bottom}>
+                    <g transform={`translate(${padding.left},${padding.top})`}>
+                        <Spline points={points} />
+                        {points.map((p,i) => (
+                            <OverlayTrigger key={i} trigger="click" placement="right" rootClose
+                                            overlay={createPopover(this.props.states[i], i)}>
+                                <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}
+                                        cx={p.x} cy={p.y} r="5"></circle>
+                            </OverlayTrigger>
+                        ))}
+                    </g>
+                    <g className="legends" transform={`translate(${width + padding.left},20)`}>
+                        <g>
+                            <circle className="point" cx="0" cy="0" r="5"/>
+                            <text x="10" y="0" dy="4">State (Snapshot)</text>
+                        </g>
+                        <g transform="translate(0,20)">
+                            <circle className="point start-point" cx="0" cy="0" r="5"/>
+                            <text x="10" y="0" dy="4">Starting state</text>
+                        </g>
+                        <g transform="translate(0,40)">
+                            <circle className="point end-point" cx="0" cy="0" r="5"/>
+                            <text x="10" y="0" dy="4">End state</text>
+                        </g>
+
+                    </g>
                 </svg>
             </div>
         );

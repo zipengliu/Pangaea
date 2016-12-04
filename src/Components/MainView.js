@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {fetchInstance} from '../actions';
-import TimeCurve from './TimeCurve';
+import TimeCurveContainer from './TimeCurveContainer';
 import InvariantGraphContainer from './InvariantGraphContainer';
 import './MainView.css';
 
@@ -23,9 +23,7 @@ class MainView extends Component {
                 {!this.props.isFetching && this.props.fetchError == null && this.props.instanceData &&
                     <div className="main-container">
                         <div className="time-curve-container">
-                            <TimeCurve points={this.props.timeCurve.coordinates}
-                                       states={this.props.instanceData.states}
-                                       width={500} height={300} />
+                            <TimeCurveContainer />
                         </div>
                         <div className="invariant-graph-container">
                             <InvariantGraphContainer />

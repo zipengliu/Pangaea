@@ -1,3 +1,10 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+
 .line {
     fill: none;
     stroke-width: 2px;
@@ -27,4 +34,8 @@
 }
 
 td.value-cell {
+}
+
+.legends text {
+    font-size: 10px;
 }
