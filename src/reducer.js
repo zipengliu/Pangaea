@@ -3,17 +3,21 @@
  */
 
 import * as TYPE from './actionTypes';
-import {reduceDim, performForceSimulation, happenBefore} from './utils';
+import {reduceDim, performForceSimulation, isAllChecked} from './utils';
 
 let initialState = {
     instanceData: null,
     isFetching: false,
     fetchError: null,
+    diffFunc: [{name: 'XOR'}, {name: 'BLABLA'}],
+    activeDiffFuncId: 0,
     timeCurve: {
         coordinates: null,
         width: 500,
         height: 300,
         padding: {top: 50, bottom: 50, left: 50, right: 100},
+        dumpVariables: {},
+        isVariableListOpen: {}
     },
     invariantGraph: {
         nodes: null,
@@ -33,6 +37,8 @@ let initialState = {
         displayCut: null
     },
 };
+
+const BUILT_IN_ALL_VARS = '__ALL_VARIABLES__';
 
 // function getNodeAndLinkFromInvariants(invariants) {
 //     let nodes = {};
@@ -181,6 +187,25 @@ function getCutPosition(events, states, processes) {
     }
 }
 
+function getDumpVariables(states, processes) {
+    let allVars = {};
+    for (let i = 0; i < processes.length; i++) {
+        allVars[processes[i]] = {[BUILT_IN_ALL_VARS]: true};
+    }
+    for (let i = 0; i < states.length; i++) {
+        let d = states[i].Points;
+        for (let j = 0; j < d.length; j++) {
+            let variables = d[j].Dump;
+            let p = processes[j];
+            for (let k = 0; k < variables.length; k++) {
+                let varName = variables[k].VarName;
+                allVars[p][varName] = true;
+            }
+        }
+    }
+    return allVars;
+}
+
 
 function reducer(state = initialState, action) {
     switch (action.type) {
@@ -197,6 +222,8 @@ function reducer(state = initialState, action) {
                 state.invariantGraph.width, state.invariantGraph.height);
             let events = getEvents(action.data.logs);
             getCutPosition(events, action.data.states, action.data.processes);
+            let dumpVariables = getDumpVariables(action.data.states, action.data.processes);
+
             return Object.assign({}, state, {
                 isFetching: false,
                 instanceData: {
@@ -205,7 +232,9 @@ function reducer(state = initialState, action) {
                 },
                 timeCurve: {
                     ...state.timeCurve,
-                    coordinates: reduceDim(action.data.distances)
+                    coordinates: reduceDim(action.data.distances),
+                    dumpVariables,
+                    isVariableListOpen: action.data.processes.reduce((a, p) => {a[p] = false; return a}, {})
                 },
                 invariantGraph: {
                     ...state.invariantGraph,
@@ -253,6 +282,51 @@ function reducer(state = initialState, action) {
                     displayCut: action.stateIdx == null? null: state.instanceData.states[action.stateIdx].cutPosition
                 }
             });
+        case TYPE.CHANGE_DIFF_FUNC:
+            return Object.assign({}, state, {
+                activeDiffFuncId: action.id
+            });
+        case TYPE.TOGGLE_DUMP_VARIABLE:
+            let varName = action.variableName || BUILT_IN_ALL_VARS;
+            let toggled = !state.timeCurve.dumpVariables[action.processName][varName];
+            let newDumpVariables = {
+                ...state.timeCurve.dumpVariables,
+                [action.processName]: {
+                    ...state.timeCurve.dumpVariables[action.processName],
+                    [varName]: toggled
+                }
+            };
+            let d = newDumpVariables[action.processName];
+            if (action.variableName) {
+                if (!toggled) {
+                    d[BUILT_IN_ALL_VARS] = false;
+                } else {
+                    if (isAllChecked(d, BUILT_IN_ALL_VARS)) {
+                        d[BUILT_IN_ALL_VARS] = toggled;
+                    }
+                }
+            } else {
+                for (let v in d) {
+                    d[v] = toggled;
+                }
+            }
+            return Object.assign({}, state, {
+                timeCurve: {
+                    ...state.timeCurve,
+                    dumpVariables: newDumpVariables
+                }
+            });
+        case TYPE.TOGGLE_VARIABLE_LIST:
+            return {
+                ...state,
+                timeCurve: {
+                    ...state.timeCurve,
+                    isVariableListOpen: {
+                        ...state.timeCurve.isVariableListOpen,
+                        [action.processName]: !state.timeCurve.isVariableListOpen[action.processName]
+                    }
+                }
+            };
 
 
 

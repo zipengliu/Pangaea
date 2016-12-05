@@ -37,6 +37,6 @@
 .tools {
     flex: 1 0 auto;
     padding: 10px 10px;
-    min-width: 300px;
+    /*min-width: 300px;*/
 }
 

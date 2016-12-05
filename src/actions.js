@@ -56,3 +56,15 @@ export function toggleHighlightInvariantNode(name) {
 export function toggleClickState(stateIdx) {
     return {type: TYPE.TOGGLE_CLICK_STATE, stateIdx};
 }
+
+export function changeDiffFunc(id) {
+    return {type: TYPE.CHANGE_DIFF_FUNC, id};
+}
+
+export function toggleDumpVariable(processName, variableName) {
+    return {type: TYPE.TOGGLE_DUMP_VARIABLE, processName, variableName};
+
+}
+export function toggleVariableList(processName) {
+    return {type: TYPE.TOGGLE_VARIABLE_LIST, processName};
+}

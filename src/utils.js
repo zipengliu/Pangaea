@@ -118,3 +118,11 @@ export function happenBefore(a, b) {
     return true;
 }
 
+
+export function isAllChecked(d, except) {
+    for (let k in d) {
+        if (k != except && !d[k]) return false;
+    }
+    return true;
+}
+
