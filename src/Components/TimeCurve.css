@@ -5,7 +5,12 @@
 }
 
 .point {
-    fill-opacity: .5;
+    /*fill-opacity: .5;*/
+}
+
+.point.selected {
+    stroke-width: 3px;
+    stroke: green;
 }
 
 .start-point {
@@ -16,6 +21,10 @@
 .end-point {
     stroke-width: 3px;
     stroke: yellow;
+}
+.selecting-box {
+    fill: steelblue;
+    fill-opacity: .3;
 }
 
 .popover {

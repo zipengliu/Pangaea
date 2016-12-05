@@ -68,3 +68,25 @@ export function toggleDumpVariable(processName, variableName) {
 export function toggleVariableList(processName) {
     return {type: TYPE.TOGGLE_VARIABLE_LIST, processName};
 }
+
+
+export function startSelection(x, y) {
+    return {
+        type: TYPE.START_SELECTION,
+        x, y
+    }
+}
+
+export function endSelection() {
+    return {
+        type: TYPE.END_SELECTION
+    }
+}
+
+export function changeSelection(x, y) {
+    return {
+        type: TYPE.CHANGE_SELECTION,
+        x, y
+    }
+}
+

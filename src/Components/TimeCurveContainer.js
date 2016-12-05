@@ -6,7 +6,8 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {ButtonGroup, Button, OverlayTrigger, Tooltip, FormGroup, Radio, Checkbox, Glyphicon} from 'react-bootstrap';
 import TimeCurve from './TimeCurve';
-import {toggleClickState, changeDiffFunc, toggleDumpVariable, toggleVariableList} from '../actions';
+import {toggleClickState, changeDiffFunc, toggleDumpVariable, toggleVariableList,
+    startSelection, changeSelection, endSelection} from '../actions';
 
 const BUILT_IN_ALL_VARS = '__ALL_VARIABLES__';
 
@@ -22,7 +23,11 @@ class TimeCurveContainer extends Component {
                         <TimeCurve timeCurve={this.props.timeCurve}
                                    states={this.props.states}
                                    processes={this.props.processes}
-                                   onClickState={this.props.onClickState}/>
+                                   onClickState={this.props.onClickState}
+                                   onDragStart={this.props.onDragStart}
+                                   onDrag={this.props.onDrag}
+                                   onDragEnd={this.props.onDragEnd}
+                        />
                     </div>
                 </div>
                 <div className="tools">
@@ -73,7 +78,10 @@ let mapDispatchToProps = (dispatch) => ({
     onClickState: (idx) => {dispatch(toggleClickState(idx))},
     onChangeDiffFunc: (id) => {dispatch(changeDiffFunc(id))},
     onToggleDumpVariable: (p, v) => {dispatch(toggleDumpVariable(p, v))},
-    onToggleVariableList: (p) => {dispatch(toggleVariableList(p))}
+    onToggleVariableList: (p) => {dispatch(toggleVariableList(p))},
+    onDragStart: (x, y) => {dispatch(startSelection(x, y))},
+    onDrag: (x, y) => {dispatch(changeSelection(x, y))},
+    onDragEnd: () => {dispatch(endSelection())}
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimeCurveContainer);

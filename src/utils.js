@@ -41,7 +41,7 @@ function rotate(coords) {
 // Normalize the coordinates to (0, 1) by linear transformation
 // how much do you want to relax the extent of the coordinates so that they don't show up on the border of the dotplot
 function normalize(coords) {
-    let   relaxCoefficient = 0.5;
+    let   relaxCoefficient = 0.8;
     let   xArr = coords.map(x => x.x);
     let   yArr = coords.map(x => x.y);
     let   xExtent = extent(xArr);
@@ -125,4 +125,11 @@ export function isAllChecked(d, except) {
     }
     return true;
 }
+
+export function isDotWithinBox(dot, box) {
+    let {x1, x2, y1, y2} = box;
+    return Math.min(x1, x2) <= dot.x && dot.x <= Math.max(x1, x2)
+        && Math.min(y1, y2) <= dot.y && dot.y <= Math.max(y1, y2);
+}
+
 
