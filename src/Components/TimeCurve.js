@@ -92,7 +92,7 @@ class TimeCurve extends Component {
                         <Spline points={points} />
                         {points.map((p,i) => (
                             <OverlayTrigger key={i} trigger="click" placement="right" rootClose
-                                            onEnter={this.props.onClickState.bind(null, i)}
+                                            onEntered={this.props.onClickState.bind(null, i)}
                                             onExit={this.props.onClickState.bind(null, null)}
                                             overlay={createPopover(this.props.states[i], i)}>
                                 <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}

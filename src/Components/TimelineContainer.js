@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import Timeline from './Timeline';
@@ -10,11 +11,19 @@ import Timeline from './Timeline';
 import './MainView.css';
 
 class TimelineContainer extends Component {
+    componentDidUpdate() {
+        let {displayCut, processes, eventGap} = this.props.timeline;
+        if (displayCut) {
+            let n = processes[0];
+            let pos = Math.max((this.props.events[n][displayCut[n] || 0].level - 5) * eventGap, 0);
+            ReactDOM.findDOMNode(this.refs.svg).scrollTop = pos;
+        }
+    }
     render() {
         return (
             <div className="graph">
                 <h3>Processes Communication</h3>
-                <div className="svg">
+                <div className="svg" ref="svg">
                     <Timeline timeline={this.props.timeline} events={this.props.events} />
                 </div>
             </div>
