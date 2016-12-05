@@ -51,3 +51,8 @@ export function toggleTransitivityMode() {
 export function toggleHighlightInvariantNode(name) {
     return {type: TYPE.TOGGLE_HIGHLIGHT_INVARIANT_NODE, name};
 }
+
+
+export function toggleClickState(stateIdx) {
+    return {type: TYPE.TOGGLE_CLICK_STATE, stateIdx};
+}

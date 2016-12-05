@@ -25,7 +25,7 @@ let Spline = ({points}) => {
 
 let StateDetail = props => {
     let d = props.data;
-    let nodeNames = Object.keys(d.Cut.Clocks[0]);
+    let nodeNames = props.processes;
     let rows = [];
     for (let i = 0; i < nodeNames.length; i++) {
         let vars = d.Points[i].Dump;
@@ -84,7 +84,7 @@ class TimeCurve extends Component {
         points = avoidOverlap(points, 4);
 
         let createPopover = (s, i) => <Popover id={'state-' + i} title={"State of Node " + i}>
-            <StateDetail data={s} /></Popover>;
+            <StateDetail data={s} processes={this.props.processes} /></Popover>;
         return (
             <div>
                 <svg width={width + padding.left + padding.right} height={height + padding.top + padding.bottom}>
@@ -92,6 +92,8 @@ class TimeCurve extends Component {
                         <Spline points={points} />
                         {points.map((p,i) => (
                             <OverlayTrigger key={i} trigger="click" placement="right" rootClose
+                                            onEnter={this.props.onClickState.bind(null, i)}
+                                            onExit={this.props.onClickState.bind(null, null)}
                                             overlay={createPopover(this.props.states[i], i)}>
                                 <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}
                                         cx={p.x} cy={p.y} r="5"></circle>

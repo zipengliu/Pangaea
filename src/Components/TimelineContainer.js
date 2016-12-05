@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import Timeline from './Timeline';
-import {happenBefore} from '../utils';
 
 import './MainView.css';
 

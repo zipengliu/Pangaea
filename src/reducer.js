@@ -30,8 +30,8 @@ let initialState = {
         eventGap: 50,
         processes: [],
         events: {},
-        cuts: []
-    }
+        displayCut: null
+    },
 };
 
 // function getNodeAndLinkFromInvariants(invariants) {
@@ -63,6 +63,25 @@ function getNodes(invariants) {
     }
     return nodes;
 }
+
+// Search all events[host] find that the one satisfying clock[p] = target
+let searchEventByClock = (events, host, p, target) => {
+    // binary search
+    let l = 0, r = events[host].length - 1;
+    let m, v;
+    while (l <= r) {
+        m = Math.floor((l + r) / 2);
+        v = events[host][m].clock[p];
+        if (v < target) {
+            l = m + 1;
+        } else if (v > target) {
+            r = m - 1;
+        } else {
+            break;
+        }
+    }
+    return v == target? events[host][m]: null;
+};
 
 function getEvents(logs) {
     let events = {};
@@ -106,24 +125,6 @@ function getEvents(logs) {
         return d;
     };
 
-    // Search all events[host] find that the one satisfying clock[p] = target
-    let searchEventByClock = (host, p, target) => {
-        // binary search
-        let l = 0, r = events[host].length - 1;
-        let m, v;
-        while (l <= r) {
-            m = Math.floor((l + r) / 2);
-            v = events[host][m].clock[p];
-            if (v < target) {
-                l = m + 1;
-            } else if (v > target) {
-                r = m - 1;
-            } else {
-                break;
-            }
-        }
-        return v == target? events[host][m]: null;
-    };
 
     // Compare vector clock on certain processes
     let compareClocks = (c1, c2, processes) => {
@@ -147,7 +148,7 @@ function getEvents(logs) {
             diff.splice(diff.indexOf(e.host), 1);
             for (let i = 0; i < diff.length; i++) {
                 let s = diff[i];
-                let potentialSenderEvent = searchEventByClock(s, s, e.clock[s]);
+                let potentialSenderEvent = searchEventByClock(events, s, s, e.clock[s]);
 
                 // if all other clock values in diff are coming from that senderEvent, bingo
                 if (compareClocks(e.clock, potentialSenderEvent.clock, diff)) {
@@ -166,30 +167,20 @@ function getEvents(logs) {
     return events;
 }
 
+function getCutPosition(events, states, processes) {
+    for (let i = 0; i < states.length; i++) {
+        let s = states[i];
+        let clocks = s.Cut.Clocks;
+        s.cutPosition = {};
+        for (let j = 0; j < processes.length; j++) {
+            let p = processes[j];
+            let c = clocks[j];
+            let pos = searchEventByClock(events, p, p, c[p]);
+            s.cutPosition[p] = pos.idx;
+        }
+    }
+}
 
-//
-// function getEventOrders(events) {
-//     let orders = {};
-//     for (let n in events) {
-//         orders[n] = {};
-//         let compare = (a, b) => {
-//             if (happenBefore(events[n][a].clock, events[n][b].clock)) {
-//                 return 1;
-//             } else if (happenBefore(events[n][b].clock, events[n][a].clock)) {
-//                 return -1;
-//             } else return 0;
-//         };
-//         let d = events[n].map(x => x.id).sort(compare);
-//         for (let n2 in events) {
-//             if (n2 != n) {
-//                 let compare2 = (a, b) => {
-//
-//                 };
-//                 orders[n][n2] = d.slice().sort(compare2);
-//             }
-//         }
-//     }
-// }
 
 function reducer(state = initialState, action) {
     switch (action.type) {
@@ -205,6 +196,7 @@ function reducer(state = initialState, action) {
                 action.data.invariants.map(d => ({source: d.LeftArgument, target: d.RightArgument, op: d.Operator})),
                 state.invariantGraph.width, state.invariantGraph.height);
             let events = getEvents(action.data.logs);
+            getCutPosition(events, action.data.states, action.data.processes);
             return Object.assign({}, state, {
                 isFetching: false,
                 instanceData: {
@@ -223,7 +215,7 @@ function reducer(state = initialState, action) {
                 timeline: {
                     ...state.timeline,
                     events,
-                    processes: Object.keys(events)
+                    processes: action.data.processes
                 }
             });
         case TYPE.FETCH_INSTANCE_FAILURE:
@@ -253,6 +245,15 @@ function reducer(state = initialState, action) {
                     highlightNodeName: action.name
                 }
             });
+
+        case TYPE.TOGGLE_CLICK_STATE:
+            return Object.assign({}, state, {
+                timeline: {
+                    ...state.timeline,
+                    displayCut: action.stateIdx == null? null: state.instanceData.states[action.stateIdx].cutPosition
+                }
+            });
+
 
 
         default:

@@ -11,7 +11,7 @@ import './Timeline.css';
 
 class Timeline extends Component {
     render() {
-        let {processGap, eventGap, padding, processes} = this.props.timeline;
+        let {processGap, eventGap, padding, processes, displayCut} = this.props.timeline;
         let events = this.props.events;
         let width = (processes.length - 1) * processGap;
         let maxLevel = 0;
@@ -38,10 +38,23 @@ class Timeline extends Component {
         }
         let headerHeight = 25;
 
+        let cutPos = null;
+        if (displayCut) {
+            cutPos = {};
+            for (let n in displayCut) {
+                cutPos[n] = (events[n][displayCut[n] || 0].level + 1) * eventGap + 10;
+            }
+        }
+
         return (
-            <svg width={width + padding.left + padding.right}
+            <svg id="timeline" width={width + padding.left + padding.right}
                  height={(maxLevel + 2) * eventGap + headerHeight + padding.top + padding.bottom}>
                 <g transform={`translate(${padding.left},${padding.top})`}>
+                    <g className="links" transform={`translate(0,${headerHeight})`}>
+                        {links.map((link, i) =>
+                            <line className="link" key={i} x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2} />
+                        )}
+                    </g>
                     {processes.map((processName, idx) => (
                         <g key={processName} transform={`translate(${idx * processGap},0)`}>
                             <g className="header">
@@ -62,14 +75,13 @@ class Timeline extends Component {
                                         </OverlayTrigger>
                                     ))}
                                 </g>
+                                {cutPos && cutPos[processName] && <g className="cut">
+                                    <rect className="cut-block" x={-30} y={cutPos[processName]}
+                                          width={60} height={10} />
+                                </g>}
                             </g>
                         </g>
                     ))}
-                    <g className="links" transform={`translate(0,${headerHeight})`}>
-                        {links.map((link, i) =>
-                            <line className="link" key={i} x1={link.x1} y1={link.y1} x2={link.x2} y2={link.y2} />
-                        )}
-                    </g>
                 </g>
             </svg>
         )

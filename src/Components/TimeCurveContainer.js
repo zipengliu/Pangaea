@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {ButtonGroup, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import TimeCurve from './TimeCurve';
+import {toggleClickState} from '../actions';
 
 class TimeCurveContainer extends Component {
     render() {
@@ -15,7 +16,9 @@ class TimeCurveContainer extends Component {
                     <h3>State Transitions</h3>
                     <div className="svg">
                         <TimeCurve timeCurve={this.props.timeCurve}
-                                   states={this.props.states}/>
+                                   states={this.props.states}
+                                   processes={this.props.processes}
+                                   onClickState={this.props.onClickState}/>
                     </div>
                 </div>
                 <div className="tools">
@@ -32,8 +35,13 @@ class TimeCurveContainer extends Component {
 
 let mapStateToProps = (state) => ({
     timeCurve: state.timeCurve,
+    processes: state.instanceData.processes,
     states: state.instanceData.states,
 });
 
-export default connect(mapStateToProps)(TimeCurveContainer);
+let mapDispatchToProps = (dispatch) => ({
+    onClickState: (idx) => {dispatch(toggleClickState(idx))}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TimeCurveContainer);
 

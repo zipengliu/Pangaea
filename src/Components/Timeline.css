@@ -1,14 +1,18 @@
 
-.process-name {
+#timeline .process-name {
     font-size: 14px;
 }
 
-.timeline-content .line {
+#timeline .timeline-content .line {
     stroke-width: 1px;
 }
-.links .link {
+#timeline .links .link {
     stroke: grey;
     stroke-width: 1px;
+}
+
+#timeline .cut-block {
+    fill: grey;
 }
 
 .tooltip .tooltip-inner {
