@@ -1,13 +1,19 @@
 .main-container {
     display: flex;
 }
+.left-col {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+}
 
 .time-curve-container {
-    flex: 1 0 50%;
+    flex: 1 0 auto;
 }
 
 .invariant-graph-container {
-    flex: 1 0 50%;
+    flex: 1 0 auto;
+    margin: 10px 0;
 }
 
 .container {
@@ -25,6 +31,8 @@
 }
 .graph .svg {
     border: 1px solid grey;
+    max-height: 800px;
+    overflow: scroll;
 }
 .tools {
     flex: 1 0 auto;

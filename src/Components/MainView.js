@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {fetchInstance} from '../actions';
 import TimeCurveContainer from './TimeCurveContainer';
 import InvariantGraphContainer from './InvariantGraphContainer';
+import TimelineContainer from './TimelineContainer';
 import './MainView.css';
 
 class MainView extends Component {
@@ -22,11 +23,16 @@ class MainView extends Component {
                 <h1>{this.props.fetchError.toString() || 'Failed to fetch data.'}</h1>}
                 {!this.props.isFetching && this.props.fetchError == null && this.props.instanceData &&
                     <div className="main-container">
-                        <div className="time-curve-container">
-                            <TimeCurveContainer />
+                        <div className="left-col">
+                            <div className="time-curve-container">
+                                <TimeCurveContainer />
+                            </div>
+                            <div className="invariant-graph-container">
+                                <InvariantGraphContainer />
+                            </div>
                         </div>
-                        <div className="invariant-graph-container">
-                            <InvariantGraphContainer />
+                        <div className="right-col">
+                            <TimelineContainer />
                         </div>
                     </div>
                 }

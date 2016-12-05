@@ -110,3 +110,11 @@ export function getTriangle(src, tgt, margin, d) {
 
     return [tip, c1, c2];
 }
+
+export function happenBefore(a, b) {
+    for (let node in a) {
+        if (!(node in b) || a[node] > b[node]) return false;
+    }
+    return true;
+}
+
