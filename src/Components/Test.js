@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import StateDetail from './StateDetail';
 import TimeCurve from './TimeCurve';
 import {reduceDim} from '../utils';
 
@@ -47,7 +46,7 @@ class Test extends Component {
         return (
             <div>
                 <div>
-                    {this.state.coordinates && <TimeCurve points={this.state.coordinates} />}
+                    {this.state.coordinates && <TimeCurve points={this.state.coordinates} width={800} height={400} />}
                 </div>
                 <div>
                     {/*<StateDetail state={this.state.selectedState} />*/}

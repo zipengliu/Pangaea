@@ -39,3 +39,32 @@ function fetchInstanceSuccess(data) {
 function fetchInstanceFailure(error) {
     return {type: TYPE.FETCH_INSTANCE_FAILURE, error: error.toString()}
 }
+
+export function toggleLabel() {
+    return {type: TYPE.TOGGLE_LABEL}
+}
+
+export function toggleTransitivityMode() {
+    return {type: TYPE.TOGGLE_TRANSITIVITY_MODE}
+}
+
+export function toggleHighlightInvariantNode(name) {
+    return {type: TYPE.TOGGLE_HIGHLIGHT_INVARIANT_NODE, name};
+}
+
+
+export function toggleClickState(stateIdx) {
+    return {type: TYPE.TOGGLE_CLICK_STATE, stateIdx};
+}
+
+export function changeDiffFunc(id) {
+    return {type: TYPE.CHANGE_DIFF_FUNC, id};
+}
+
+export function toggleDumpVariable(processName, variableName) {
+    return {type: TYPE.TOGGLE_DUMP_VARIABLE, processName, variableName};
+
+}
+export function toggleVariableList(processName) {
+    return {type: TYPE.TOGGLE_VARIABLE_LIST, processName};
+}

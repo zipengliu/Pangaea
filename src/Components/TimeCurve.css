@@ -17,3 +17,26 @@
     stroke-width: 3px;
     stroke: yellow;
 }
+
+.popover {
+    max-width: 800px;
+}
+.popover .popover-content {
+    max-height: 600px;
+    overflow: scroll;
+}
+
+td.value-cell {
+}
+
+.legends text {
+    font-size: 10px;
+}
+
+#variable-filter {
+    max-height: 300px;
+    overflow: scroll;
+}
+#variable-filter .sec-level {
+    margin-left: 20px;
+}

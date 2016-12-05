@@ -1,0 +1,32 @@
+.dot {
+    fill: grey;
+}
+.dot.highlight {
+    fill: red;
+}
+
+.link.equal, .link.non-equal.and-equal, .legends .equal{
+    stroke: black;
+    stroke-width: 1px;
+}
+.link.not-equal, .legends line.not-equal{
+    stroke: black;
+    stroke-width: 1px;
+    stroke-dasharray: 5,3;
+}
+.link.non-equal, .legends path.non-equal{
+    fill: steelblue;
+    fill-opacity: .4;
+}
+.link.equal.highlight {
+    stroke: red;
+}
+.link.non-equal.highlight {
+    fill: red;
+}
+
+
+.label {
+    font-size: 10px;
+}
+

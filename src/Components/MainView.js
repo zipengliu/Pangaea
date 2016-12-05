@@ -5,7 +5,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {fetchInstance} from '../actions';
-import TimeCurve from './TimeCurve';
+import TimeCurveContainer from './TimeCurveContainer';
+import InvariantGraphContainer from './InvariantGraphContainer';
+import TimelineContainer from './TimelineContainer';
+import './MainView.css';
 
 class MainView extends Component {
     componentDidMount() {
@@ -19,8 +22,18 @@ class MainView extends Component {
                 {!this.props.isFetching && this.props.fetchError != null &&
                 <h1>{this.props.fetchError.toString() || 'Failed to fetch data.'}</h1>}
                 {!this.props.isFetching && this.props.fetchError == null && this.props.instanceData &&
-                    <div>
-                        <TimeCurve points={this.props.overview.timeCurve.coordinates} />
+                    <div className="main-container">
+                        <div className="left-col">
+                            <div className="time-curve-container">
+                                <TimeCurveContainer />
+                            </div>
+                            <div className="invariant-graph-container">
+                                <InvariantGraphContainer />
+                            </div>
+                        </div>
+                        <div className="right-col">
+                            <TimelineContainer />
+                        </div>
                     </div>
                 }
             </div>

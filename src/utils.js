@@ -2,7 +2,8 @@
  * Created by Zipeng Liu on 2016-11-22.
  */
 
-import {scaleLinear, extent, deviation, forceSimulation, forceCollide} from 'd3';
+import {scaleLinear, extent, deviation,
+    forceSimulation, forceCollide, forceLink, forceManyBody, forceCenter} from 'd3';
 import tsnejs from './tsne';
 
 
@@ -15,7 +16,7 @@ export function avoidOverlap(coords, r) {
     let nodes = coords.map((d, i) => ({...d, index: i}));
     let simulation = forceSimulation(nodes).force('collide', forceCollide(r)).stop();
         // .on('tick', () => {console.log('tick')});
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 300; i++) {
         simulation.tick();
     }
     return nodes.map(d => ({x: d.x, y: d.y}));
@@ -80,3 +81,48 @@ export function reduceDim(d) {
     let  coords = tsne.getSolution().map(d => ({x: d[0], y: d[1]}));
     return normalize(rotate(coords));
 }
+
+export function performForceSimulation(nodes, links, width, height) {
+    let simulation = forceSimulation(nodes)
+        .force('link', forceLink(links).id(d => d.varName).distance(80))
+        .force('charge', forceManyBody().strength(-30))
+        .force('center', forceCenter(width / 2, height / 2))
+        .stop();
+    for (let i = 0; i < 300; i++) {
+        simulation.tick();
+    }
+    return {nodes, links};
+}
+
+export function getDistance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
+export function getTriangle(src, tgt, margin, d) {
+    let l = getDistance(src.x, src.y, tgt.x, tgt.y);
+    let sin = (tgt.y - src.y) / l;
+    let cos = (tgt.x - src.x) / l;
+    let tip = {x: src.x + margin * cos, y: src.y + margin * sin};
+    let bottom = {x: tgt.x - margin * cos, y: tgt.y - margin * sin};
+
+    let c1 = {x: bottom.x + d * sin, y: bottom.y - d * cos};
+    let c2 = {x: bottom.x - d * sin, y: bottom.y + d * cos};
+
+    return [tip, c1, c2];
+}
+
+export function happenBefore(a, b) {
+    for (let node in a) {
+        if (!(node in b) || a[node] > b[node]) return false;
+    }
+    return true;
+}
+
+
+export function isAllChecked(d, except) {
+    for (let k in d) {
+        if (k != except && !d[k]) return false;
+    }
+    return true;
+}
+
