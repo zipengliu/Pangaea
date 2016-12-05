@@ -3,7 +3,8 @@
  */
 
 import * as TYPE from './actionTypes';
-import {reduceDim, performForceSimulation, isAllChecked} from './utils';
+import {scaleLinear} from 'd3-scale';
+import {reduceDim, avoidOverlap, performForceSimulation, isAllChecked, isDotWithinBox} from './utils';
 
 let initialState = {
     instanceData: null,
@@ -17,7 +18,10 @@ let initialState = {
         height: 300,
         padding: {top: 50, bottom: 50, left: 50, right: 100},
         dumpVariables: {},
-        isVariableListOpen: {}
+        isVariableListOpen: {},
+        selectionArea: {},
+        isSelecting: false,
+        selectedStates: []
     },
     invariantGraph: {
         nodes: null,
@@ -224,6 +228,13 @@ function reducer(state = initialState, action) {
             getCutPosition(events, action.data.states, action.data.processes);
             let dumpVariables = getDumpVariables(action.data.states, action.data.processes);
 
+
+            let normalizedCoordinates = reduceDim(action.data.distances);
+            let xScale = scaleLinear().range([0, state.timeCurve.width]);
+            let yScale = scaleLinear().range([0, state.timeCurve.height]);
+            let points = normalizedCoordinates.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
+            let coordinates = avoidOverlap(points, 4);
+
             return Object.assign({}, state, {
                 isFetching: false,
                 instanceData: {
@@ -232,7 +243,8 @@ function reducer(state = initialState, action) {
                 },
                 timeCurve: {
                     ...state.timeCurve,
-                    coordinates: reduceDim(action.data.distances),
+                    normalizedCoordinates,
+                    coordinates,
                     dumpVariables,
                     isVariableListOpen: action.data.processes.reduce((a, p) => {a[p] = false; return a}, {})
                 },
@@ -325,6 +337,40 @@ function reducer(state = initialState, action) {
                         ...state.timeCurve.isVariableListOpen,
                         [action.processName]: !state.timeCurve.isVariableListOpen[action.processName]
                     }
+                }
+            };
+        case TYPE.START_SELECTION:
+            return {
+                ...state,
+                timeCurve: {
+                    ...state.timeCurve,
+                    isSelecting: true,
+                    selectionArea: {x1: action.x, y1: action.y, x2: action.x, y2: action.y}
+                }
+            };
+        case TYPE.END_SELECTION:
+            let selectedStates = [];
+            let c = state.timeCurve.coordinates;
+            for (let i = 0; i < c.length; i++) {
+                if (isDotWithinBox(c[i], state.timeCurve.selectionArea)) {
+                    selectedStates.push(i);
+                }
+            }
+            return {
+                ...state,
+                timeCurve: {
+                    ...state.timeCurve,
+                    isSelecting: false,
+                    selectedStates
+                }
+            };
+        case TYPE.CHANGE_SELECTION:
+            return {
+                ...state,
+                timeCurve: {
+                    ...state.timeCurve,
+                    isSelecting: true,
+                    selectionArea: {...state.timeCurve.selectionArea, x2: action.x, y2: action.y}
                 }
             };
 

@@ -3,10 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import {line, select, curveCatmullRom, scaleLinear} from 'd3';
+import {line, curveCatmullRom} from 'd3';
 import {OverlayTrigger, Popover, Table} from 'react-bootstrap';
 import classNames from 'classnames';
-import {avoidOverlap} from '../utils';
 import  './TimeCurve.css';
 
 
@@ -77,28 +76,44 @@ let StateDetail = props => {
 class TimeCurve extends Component {
 
     render() {
-        let {width, height, padding, coordinates} = this.props.timeCurve;
-        let xScale = scaleLinear().range([0, width]);
-        let yScale = scaleLinear().range([0, height]);
-        let points = coordinates.map(d => ({x: xScale(d.x), y: yScale(d.y)}));
-        points = avoidOverlap(points, 4);
+        let {width, height, padding, coordinates, isSelecting, selectionArea, selectedStates} = this.props.timeCurve;
+
+        let selRect;
+        if (isSelecting) {
+            let {x1, x2, y1, y2} = selectionArea;
+            selRect = {x: Math.min(x1, x2), y: Math.min(y1, y2), width: Math.abs(x1 - x2), height: Math.abs(y1 - y2)};
+        }
 
         let createPopover = (s, i) => <Popover id={'state-' + i} title={"State of Node " + i}>
             <StateDetail data={s} processes={this.props.processes} /></Popover>;
         return (
             <div>
-                <svg width={width + padding.left + padding.right} height={height + padding.top + padding.bottom}>
+                <svg width={width + padding.left + padding.right} height={height + padding.top + padding.bottom}
+                    onMouseDown={(e) => {
+                        let svgPos = e.currentTarget.getBoundingClientRect();
+                        this.props.onDragStart(e.pageX - svgPos.left - padding.left, e.pageY - svgPos.top - padding.top)
+                    }}
+                    onMouseMove={(e) => {
+                        if (isSelecting) {
+                            let svgPos = e.currentTarget.getBoundingClientRect();
+                            this.props.onDrag(e.pageX - svgPos.left - padding.left, e.pageY - svgPos.top - padding.top)
+                        }
+                    }}
+                    onMouseUp={this.props.onDragEnd}>
+
                     <g transform={`translate(${padding.left},${padding.top})`}>
-                        <Spline points={points} />
-                        {points.map((p,i) => (
+                        <Spline points={coordinates} />
+                        {coordinates.map((p,i) => (
                             <OverlayTrigger key={i} trigger="click" placement="right" rootClose
                                             onEntered={this.props.onClickState.bind(null, i)}
                                             onExit={this.props.onClickState.bind(null, null)}
                                             overlay={createPopover(this.props.states[i], i)}>
-                                <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == points.length - 1})}
+                                <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == coordinates.length - 1, selected: selectedStates.indexOf(i) !== -1})}
                                         cx={p.x} cy={p.y} r="5"></circle>
                             </OverlayTrigger>
                         ))}
+                        {isSelecting && selRect.width && selRect.height &&
+                        <rect {...selRect} className="selecting-box"/>}
                     </g>
                     <g className="legends" transform={`translate(${width + padding.left},20)`}>
                         <g>
@@ -112,6 +127,10 @@ class TimeCurve extends Component {
                         <g transform="translate(0,40)">
                             <circle className="point end-point" cx="0" cy="0" r="5"/>
                             <text x="10" y="0" dy="4">End state</text>
+                        </g>
+                        <g transform="translate(0,60)">
+                            <circle className="point selected" cx="0" cy="0" r="5"/>
+                            <text x="10" y="0" dy="4">Selected state</text>
                         </g>
 
                     </g>

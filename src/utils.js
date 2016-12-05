@@ -126,3 +126,10 @@ export function isAllChecked(d, except) {
     return true;
 }
 
+export function isDotWithinBox(dot, box) {
+    let {x1, x2, y1, y2} = box;
+    return Math.min(x1, x2) <= dot.x && dot.x <= Math.max(x1, x2)
+        && Math.min(y1, y2) <= dot.y && dot.y <= Math.max(y1, y2);
+}
+
+
