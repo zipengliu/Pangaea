@@ -14,6 +14,7 @@ let initialState = {
     activeDiffFuncId: 0,
     timeCurve: {
         coordinates: null,
+        pathSegments: null,
         width: 500,
         height: 300,
         padding: {top: 50, bottom: 50, left: 50, right: 100},
@@ -371,6 +372,14 @@ function reducer(state = initialState, action) {
                     ...state.timeCurve,
                     isSelecting: true,
                     selectionArea: {...state.timeCurve.selectionArea, x2: action.x, y2: action.y}
+                }
+            };
+        case TYPE.PATH_SEGMENT_READY:
+            return {
+                ...state,
+                timeCurve: {
+                    ...state.timeCurve,
+                    pathSegments: action.segments
                 }
             };
 

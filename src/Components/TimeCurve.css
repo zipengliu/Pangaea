@@ -1,7 +1,11 @@
 .line {
     fill: none;
-    stroke-width: 2px;
-    stroke: steelblue;
+    /*stroke-width: 1px;*/
+    stroke: none;
+}
+.line-segment {
+    fill: none;
+    stroke-width: 1px;
 }
 
 .point {
@@ -10,18 +14,25 @@
 
 .point.selected {
     stroke-width: 3px;
-    stroke: green;
+    stroke: #66aa00;
 }
 
 .start-point {
     stroke-width: 3px;
-    stroke: red;
+    stroke: #17becf;
+}
+.legends .start-point {
+    fill: red;
 }
 
 .end-point {
     stroke-width: 3px;
-    stroke: yellow;
+    stroke: #17becf;
 }
+.legends .end-point {
+    fill: black;
+}
+
 .selecting-box {
     fill: steelblue;
     fill-opacity: .3;

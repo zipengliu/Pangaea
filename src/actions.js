@@ -90,3 +90,6 @@ export function changeSelection(x, y) {
     }
 }
 
+export function pathSegmentReady(segments) {
+    return {type: TYPE.PATH_SEGMENT_READY, segments}
+}

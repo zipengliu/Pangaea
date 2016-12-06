@@ -133,3 +133,15 @@ export function isDotWithinBox(dot, box) {
 }
 
 
+export function segmentPath(path, dt) {
+    let n = path.getTotalLength(), i = 0;
+    let segs = [];
+    while (i + dt < n) {
+        // add a new segment from point i to i+dt
+        let a = path.getPointAtLength(i);
+        let b = path.getPointAtLength(i + dt);
+        segs.push({x1: a.x, y1: a.y, x2: b.x, y2: b.y});
+        i += dt;
+    }
+    return segs;
+}

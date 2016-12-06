@@ -3,23 +3,44 @@
  */
 
 import React, { Component } from 'react';
-import {line, curveCatmullRom} from 'd3';
+import reactDOM from 'react-dom';
+import {line, curveCatmullRom, interpolateRgb} from 'd3';
 import {OverlayTrigger, Popover, Table} from 'react-bootstrap';
 import classNames from 'classnames';
+import {segmentPath} from '../utils';
 import  './TimeCurve.css';
 
 
-let Spline = ({points}) => {
-    let l = line()
-        .x(d => d.x)
-        .y(d => d.y)
-        .curve(curveCatmullRom.alpha(0.5));
-    return (
-        <g>
-            <path className="line" d={l(points)}/>
-        </g>
-    )
-};
+class Spline extends Component {
+    componentDidMount() {
+        let path = reactDOM.findDOMNode(this.refs.path);
+        let segments = segmentPath(path, 8);
+        this.props.onPathSegmentReady(segments);
+    }
+    render() {
+        let {segments} = this.props;
+        if (segments == null) {
+            let l = line()
+                .x(d => d.x)
+                .y(d => d.y)
+                .curve(curveCatmullRom.alpha(0.5));
+            return (
+                <g>
+                    <path className="line" ref="path" d={l(this.props.points)}/>
+                </g>
+            )
+        } else {
+            let color = interpolateRgb('red', 'black');
+            let n = segments.length - 1;
+            return (
+                <g>
+                    {segments.map((s, i) => <line key={i} className="line-segment" style={{stroke: color(i/n)}}
+                                                  x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}/>)}
+                </g>
+            )
+        }
+    }
+}
 
 
 let StateDetail = props => {
@@ -84,6 +105,9 @@ class TimeCurve extends Component {
             selRect = {x: Math.min(x1, x2), y: Math.min(y1, y2), width: Math.abs(x1 - x2), height: Math.abs(y1 - y2)};
         }
 
+        let dotColor = interpolateRgb('red', 'black');
+        let n = coordinates.length;
+
         let createPopover = (s, i) => <Popover id={'state-' + i} title={"State of Node " + i}>
             <StateDetail data={s} processes={this.props.processes} /></Popover>;
         return (
@@ -102,14 +126,15 @@ class TimeCurve extends Component {
                     onMouseUp={this.props.onDragEnd}>
 
                     <g transform={`translate(${padding.left},${padding.top})`}>
-                        <Spline points={coordinates} />
+                        <Spline points={coordinates} segments={this.props.timeCurve.pathSegments} onPathSegmentReady={this.props.onPathSegmentReady} />
                         {coordinates.map((p,i) => (
                             <OverlayTrigger key={i} trigger="click" placement="right" rootClose
                                             onEntered={this.props.onClickState.bind(null, i)}
                                             onExit={this.props.onClickState.bind(null, null)}
                                             overlay={createPopover(this.props.states[i], i)}>
                                 <circle className={classNames('point', {'start-point': i == 0, 'end-point': i == coordinates.length - 1, selected: selectedStates.indexOf(i) !== -1})}
-                                        cx={p.x} cy={p.y} r="5"></circle>
+                                        style={{fill: dotColor(i/n)}}
+                                        cx={p.x} cy={p.y} r="4"/>
                             </OverlayTrigger>
                         ))}
                         {isSelecting && selRect.width && selRect.height &&
