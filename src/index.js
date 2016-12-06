@@ -9,7 +9,6 @@ import thunkMiddleware from 'redux-thunk';
 import reducer from './reducer';
 import App from './Components/App';
 import Test from './Components/Test';
-import Submit from './Components/Submit';
 import About from './Components/About';
 import MainView from './Components/MainView';
 import SelectedInstances from './Components/SelectedInstances';
@@ -30,7 +29,6 @@ let root = (
                 <Route path="instance/:instanceId" component={MainView}/>
                 <Route path="selected-instances" component={SelectedInstances}/>
                 <Route path="test/:instanceId" component={Test} />
-                <Route path="submit/:instanceId" component={Submit} />
             </Route>
         </Router>
     </Provider>

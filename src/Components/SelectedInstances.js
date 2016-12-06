@@ -8,8 +8,10 @@ import {ListGroup, ListGroupItem} from 'react-bootstrap';
 class SelectedInstances extends Component {
     render() {
         let instances = [
-            {name: 'test', instanceId: '1'},
-            {name: 'test2', instanceId: '1'}
+            {name: 'Raft Put then Get (large)', instanceId: 'Put-then-Get-Large'},
+            {name: 'Raft Put then Get (small)', instanceId: 'Put-then-Get-Small'},
+            {name: 'Raft Put and Get', instanceId: 'Put-and-Get'},
+            {name: 'Raft Put and get with Failure', instanceId: 'Put-and-Get-Fail'},
         ];
 
         return (
