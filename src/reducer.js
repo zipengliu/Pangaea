@@ -187,7 +187,9 @@ function getCutPosition(events, states, processes) {
             let p = processes[j];
             let c = clocks[j];
             let pos = searchEventByClock(events, p, p, c[p]);
-            s.cutPosition[p] = pos.idx;
+            if (pos) {
+                s.cutPosition[p] = pos.idx;
+            }
         }
     }
 }
