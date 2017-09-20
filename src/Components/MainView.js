@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {fetchInstance} from '../actions';
+import {getDinvFile} from '../actions';
 import TimeCurveContainer from './TimeCurveContainer';
 import InvariantGraphContainer from './InvariantGraphContainer';
 import TimelineContainer from './TimelineContainer';
@@ -12,6 +13,7 @@ import './MainView.css';
 
 class MainView extends Component {
     componentDidMount() {
+        //this.props.dispatch(getDinvFile(this.props.params.instanceId));
         this.props.dispatch(fetchInstance(this.props.params.instanceId));
     }
 

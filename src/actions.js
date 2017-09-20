@@ -28,6 +28,57 @@ export function fetchInstance(id) {
     }
 }
 
+export function postDviz(data) {
+    console.log('Going to Dviz...');
+    return function (dispatch) {
+        return fetch('http://localhost:3119',
+            {
+                method: "POST",
+                body: data
+            }
+        ).then(function(response) {
+            if (response.status >= 400) {
+                console.log("Bad response from server");
+                dispatch(fetchInstanceFailure(response.statusText))
+            }
+            return response.json();
+        }).then(function (data) {
+            console.log('Get data succeeded!');
+            dispatch(fetchInstanceSuccess(data));
+        }).catch(function(error) {
+            dispatch(fetchInstanceFailure(error));
+        });
+
+    }
+}
+
+
+export function getDinvFile(id) {
+    console.log('Going to get dinv file...');
+    return function (dispatch) {
+        dispatch(requestInstance(id));
+        //make the request
+        return fetch('http://localhost:3118').then(function(response) {
+            if (response.status >= 400) {
+                console.log("Bad response from server");
+                dispatch(fetchInstanceFailure(response.statusText))
+            }
+            console.log("Good response code")
+            console.log(response)
+            return response.json();
+        }).then(function (data) {
+            console.log('Get data succeeded wow!');
+            console.log(data)
+            //dispatch(postDviz(data))
+            dispatch(fetchInstanceSuccess(data));
+        }).catch(function(error) {
+            console.log("failed to parse json")
+            dispatch(fetchInstanceFailure(error));
+        });
+
+    }
+}
+
 function requestInstance(id) {
     return {type: TYPE.FETCH_INSTANCE_REQUEST, instanceId: id}
 }
